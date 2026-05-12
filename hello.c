@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <locale.h>
+#include <wchar.h>
+#include <wctype.h>
 
 #define BUFFER_SIZE  256
 #define MAX_NUMBERS  100
@@ -35,7 +38,25 @@ static void print_array(const long long arr[], int count) {
     printf("\n");
 }
 
+/* Uppercase all alphabetic characters in-place, leave everything else untouched.
+ * Uses wide chars to handle UTF-8 and multi-byte encodings correctly. */
+static void uppercase_string(char *str, size_t capacity) {
+    wchar_t wide[BUFFER_SIZE];
+
+    if (mbstowcs(wide, str, BUFFER_SIZE) == (size_t)-1)
+        return;
+
+    for (int i = 0; wide[i] != L'\0'; i++) {
+        if (!iswdigit(wide[i]))
+            wide[i] = towupper(wide[i]);
+    }
+
+    wcstombs(str, wide, capacity);
+}
+
 int main(void) {
+    setlocale(LC_ALL, "");
+
     char      input[BUFFER_SIZE];
     long long numbers[MAX_NUMBERS];
 
@@ -44,6 +65,9 @@ int main(void) {
         fprintf(stderr, "Failed to read input.\n");
         return 1;
     }
+
+    uppercase_string(input, sizeof(input));
+    printf("Uppercased: %s", input);
 
     int count = parse_numbers(input, numbers, MAX_NUMBERS);
 
