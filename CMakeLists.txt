@@ -7,15 +7,15 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 # Default to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type (Debug or Release)" FORCE)
+	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type (Debug or Release)" FORCE)
 endif()
 
 add_executable(number-sorter hello.c)
 
 target_compile_options(number-sorter PRIVATE
-    -Wall
-    -Wextra
-    -Wpedantic
-    $<$<CONFIG:Debug>:   -g -O0 -DDEBUG>
-    $<$<CONFIG:Release>: -O2 -DNDEBUG>
+	-Wall
+	-Wextra
+	-Wpedantic
+	$<$<CONFIG:Debug>:	 -g -O0 -DDEBUG>
+	$<$<CONFIG:Release>: -O2 -DNDEBUG>
 )
